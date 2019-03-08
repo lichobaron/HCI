@@ -7,8 +7,6 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 var loader = new THREE.TextureLoader();
 
-controls = new THREE.OrbitControls( camera );
-
 var light = new THREE.PointLight( 0xffffff, 1, 100 );
 light.position.set( 0, 0, 0 );
 scene.add(light);
@@ -35,7 +33,7 @@ var materialEarth = new THREE.MeshPhongMaterial( {
     specular: 0x555555, 
     shininess: 30 } );
 var earth = new THREE.Mesh( geometryEarth, materialEarth );
-scene.add( earth ); 
+scene.add( earth );
 
 var moonTexture = loader.load("images/moon.jpg");
 var geometryMoon = new THREE.SphereGeometry( 0.1, 32, 32 ); //radio, lin h, lin v
@@ -87,6 +85,36 @@ var materialJupiter = new THREE.MeshPhongMaterial( {
 var jupiter = new THREE.Mesh( geometryJupiter, materialJupiter );
 scene.add( jupiter );
 
+
+var saturnTexture = loader.load("images/saturn.jpg");
+var geometrySaturn = new THREE.SphereGeometry( 0.8, 32, 32 ); //radio, lin h, lin v
+var materialSaturn = new THREE.MeshPhongMaterial( {
+    map: saturnTexture, 
+    ambient: 0x050505, 
+    specular: 0x555555, 
+    shininess: 30 } );
+var saturn = new THREE.Mesh( geometrySaturn, materialSaturn );
+scene.add( saturn );
+
+var ringTexture = loader.load("images/ring.png");
+var geometryRing = new THREE.RingGeometry(0.9,1.5,360);
+var materialRing = new THREE.MeshPhongMaterial({
+    color: 0xa5a5a5,
+    shininess: 15,
+    side: THREE.DoubleSide,
+    map: ringTexture
+});
+var ring = new THREE.Mesh( geometryRing, materialRing );
+scene.add(ring);
+
+var controls = new THREE.OrbitControls( camera );
+
+scene.background = new THREE.CubeTextureLoader()
+                    .load( [ './images/space.png', './images/space.png', './images/space.png', 
+                    './images/space.png', './images/space.png', './images/space.png' ] );
+
+
+
 var t = 0;
 function render() { 
     requestAnimationFrame(render); 
@@ -98,12 +126,16 @@ function render() {
     venus.rotation.y += 0.03;
     mars.rotation.y += 0.03;
     jupiter.rotation.y += 0.03;
+    saturn.rotation.y += 0.03;
+    ring.rotation.x = 90;
+    ring.rotation.z += 0.05;
 
-    mercury.position.x = 2 *Math.cos(t+0.1);
-    mercury.position.z = 2 *Math.sin(t+0.1);
 
-    venus.position.x = 3 *Math.cos(t+0.2);
-    venus.position.z = 3 *Math.sin(t+0.2);
+    mercury.position.x = 2 *Math.cos(3*t+0.1);
+    mercury.position.z = 2 *Math.sin(3*t+0.1);
+
+    venus.position.x = 3 *Math.cos(2*t+0.2);
+    venus.position.z = 3 *Math.sin(2*t+0.2);
 
     earth.position.x = 5 *Math.cos(t);
     earth.position.z = 5 *Math.sin(t);
@@ -111,11 +143,17 @@ function render() {
     moon.position.x = 1 *Math.cos(t*2)+earth.position.x;
     moon.position.z = 1 *Math.sin(t*2)+earth.position.z;
 
-    mars.position.x = 7 *Math.cos(t);
-    mars.position.z = 7 *Math.sin(t);
+    mars.position.x = 7 *Math.cos(1/2*t);
+    mars.position.z = 7 *Math.sin(1/2*t);
 
-    jupiter.position.x = 10 *Math.cos(t);
-    jupiter.position.z = 10 *Math.sin(t);
+    jupiter.position.x = 10 *Math.cos(1/4*t);
+    jupiter.position.z = 10 *Math.sin(1/4*t);
+    
+    saturn.position.x = 15 *Math.cos(1/5*t);
+    saturn.position.z = 15 *Math.sin(1/5*t);
+
+    ring.position.x = saturn.position.x;
+    ring.position.z = saturn.position.z;
 
     controls.update();
 
