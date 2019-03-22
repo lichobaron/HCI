@@ -24,6 +24,15 @@ function createFloor(tY, tX, w, h, d) {
     floor.translateY(tY);
     floor.translateX(tX);
 }
+function createEnemy(tY, tX, w, h, d) {
+    var geometryEnemy = new THREE.BoxGeometry(w, h, d);
+    var materialEnemy = new THREE.MeshBasicMaterial({ color: 0xfff00 });
+    var enemy = new THREE.Mesh(geometryEnemy, materialEnemy);
+    scene.add(enemy);
+    enemy.translateY(tY);
+    enemy.translateX(tX);
+    
+}
 
 /*var geometryFloor = new THREE.BoxGeometry( 10,1,5 );
 var materialFloor = new THREE.MeshBasicMaterial( {color: 0x00fff0} );
@@ -32,6 +41,8 @@ scene.add( floor );
 floor.translateY(-3.0);*/
 createFloor(-5,0,10,1,5);
 createFloor(-5,18,10,1,5);
+createEnemy(-4, 18, 0.5, 1, 1);
+
 
 var v = new THREE.Vector3(0,0,0);
 var a = new THREE.Vector3(0,-0.01,0);
@@ -129,6 +140,7 @@ var render = function(){
     }*/
 
     /////
+    
     renderer.render(scene,camera);
 }
 
