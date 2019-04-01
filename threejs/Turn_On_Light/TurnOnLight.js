@@ -39,6 +39,22 @@ function makeWalls(){
     scene.add(cube);
     cube.position.z = 10;
 
+    var geometryTexture = loader.load("images/chimenea.jpg");
+    var geometryChimenea = new THREE.BoxGeometry(7, 6, 0.4);
+    var materialChimenea = new THREE.MeshBasicMaterial({
+        map: geometryTexture,
+        ambient: 0x050505,
+        specular: 0x555555,
+        shininess: 30
+    });
+    var chimenea = new THREE.Mesh(geometryChimenea, materialChimenea);
+    chimenea.name = "chimenea";
+    scene.add(chimenea);
+    chimenea.position.z = -10;
+    chimenea.position.y = -4;
+
+    
+
     var geometryoTexture = loader.load("images/walls.jpg");
     var geometryo = new THREE.BoxGeometry(20, 15, 0.1);
     var materialo = new THREE.MeshBasicMaterial({
@@ -65,9 +81,14 @@ function makeWalls(){
     scene.add(wall);
     wall.position.x = -10;
 
-    
+    var switchTexture = loader.load("images/switch.jpg");
     var geometrySwitch = new THREE.BoxGeometry(0.4, 1.5, 1);
-    var materialSwitch = new THREE.MeshNormalMaterial();
+    var materialSwitch = new THREE.MeshBasicMaterial({
+        map: switchTexture,
+        ambient: 0x050505,
+        specular: 0x555555,
+        shininess: 30
+    });
     var switchTurn = new THREE.Mesh(geometrySwitch, materialSwitch);
     switchTurn.name = "switch";
     scene.add(switchTurn);
@@ -85,6 +106,21 @@ function makeWalls(){
     wallo.name = "w4";
     scene.add(wallo);
     wallo.position.x = 10;
+
+    var doorTexture = loader.load("images/door.jpg");
+    var geometryDoor = new THREE.BoxGeometry(0.4, 13, 7);
+    var materialDoor = new THREE.MeshBasicMaterial({
+        map: doorTexture,
+        ambient: 0x050505,
+        specular: 0x555555,
+        shininess: 30
+    });
+    var door = new THREE.Mesh(geometryDoor, materialDoor);
+    door.name = "door";
+    scene.add(door);
+    door.position.x = 10;
+    
+    
 }
 
 function makeFloorRoof(){
@@ -100,6 +136,35 @@ function makeFloorRoof(){
     floor.name = "floor";
     scene.add(floor);
     floor.position.y = -7;
+
+    var rug1Texture = loader.load("images/rug1.jpg");
+    var geometryRug1 = new THREE.BoxGeometry(4, 1.1, 3);
+    var materialRug1 = new THREE.MeshBasicMaterial({
+        map: rug1Texture,
+        ambient: 0x050505,
+        specular: 0x555555,
+        shininess: 30
+    });
+    var Rug1 = new THREE.Mesh(geometryRug1, materialRug1);
+    Rug1.name = "rug1";
+    scene.add(Rug1);
+    Rug1.position.y = -7;
+    Rug1.position.z = -7;
+
+    var rug2Texture = loader.load("images/rug2.jpg");
+    var geometryRug2 = new THREE.BoxGeometry(4, 1.1, 2);
+    var materialRug2 = new THREE.MeshBasicMaterial({
+        map: rug2Texture,
+        ambient: 0x050505,
+        specular: 0x555555,
+        shininess: 30
+    });
+    var Rug2 = new THREE.Mesh(geometryRug2, materialRug2);
+    Rug2.name = "rug2";
+    scene.add(Rug2);
+    Rug2.position.y = -7;
+    Rug2.position.z = 7;
+    Rug2.position.x = 7;
 
     var roofTexture = loader.load("images/roof.jpg");
     var geometryRoof = new THREE.BoxGeometry(20, 1, 20);
@@ -257,7 +322,7 @@ function render() {
 
     // calculate objects intersecting the picking ray
     var intersects = raycaster.intersectObjects(scene.children, true);
-
+    
     if (intersects.length > 0) {
         if (intersects[0].object.name == "switch") {
             scene.add(light);
@@ -267,11 +332,22 @@ function render() {
 
             }*/
 
+        }else{
+            if (intersects[0].object.name == "rug1") {
+                camera.position.set(7,-7,7);
+                //camera.rotate.z = 1;
+            }else{
+                if (intersects[0].object.name == "rug2") {
+                   // camera.position.set(0, -7, -7);
+                }
+            }
         }
+        
+
 
     } else {
+        
        // t = 0;
-        scene.remove(light);
     }
 
 
