@@ -4,14 +4,14 @@ var mouse = new THREE.Vector2();
 var scene = new THREE.Scene();
 var aspect = window.innerWidth / window.innerHeight;
 var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000); //apertura del lente, proporción, dist corta, dist larga
-camera.position.z=1;
-camera.position.y=1;
+camera.position.z = -7;
+camera.position.y = 1;
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 var loader = new THREE.TextureLoader();
 
-function makeWalls(){
+function makeWalls() {
     var geometryTexture = loader.load("images/walls.jpg");
     var geometry = new THREE.BoxGeometry(20, 15, 0.1);
     var material = new THREE.MeshStandardMaterial({
@@ -70,10 +70,11 @@ function makeWalls(){
     scene.add(wall);
     wall.position.x = -10;
 
+
     var switchTexture = loader.load("images/switch.jpg");
     var geometrySwitch = new THREE.BoxGeometry(0.4, 1.5, 1);
     var materialSwitch = new THREE.MeshStandardMaterial({
-        map: switchTexture,
+        normalMap: switchTexture,
         ambient: 0x050505,
         specular: 0x555555,
         shininess: 30
@@ -82,6 +83,20 @@ function makeWalls(){
     switchTurn.name = "switch";
     scene.add(switchTurn);
     switchTurn.position.x = -10;
+
+    var windowTexture = loader.load("images/window.jpg");
+    var geometryWindow = new THREE.BoxGeometry(0.4, 8, 6);
+    var materialWindow = new THREE.MeshStandardMaterial({
+        normalMap: windowTexture,
+        ambient: 0x050505,
+        specular: 0x555555,
+        shininess: 30
+    });
+    var Window = new THREE.Mesh(geometryWindow, materialWindow);
+    Window.name = "window";
+    scene.add(Window);
+    Window.position.x = -10;
+    Window.position.z = -5;
 
     var walloTexture = loader.load("images/walls2.jpg");
     var geometryWallo = new THREE.BoxGeometry(0.1, 15, 20);
@@ -108,9 +123,10 @@ function makeWalls(){
     door.name = "door";
     scene.add(door);
     door.position.x = 10;
+
 }
 
-function makeFloorRoof(){
+function makeFloorRoof() {
     var floorTexture = loader.load("images/floor.jpg");
     var geometryFloor = new THREE.BoxGeometry(20, 1, 20);
     var materialFloor = new THREE.MeshStandardMaterial({
@@ -127,7 +143,7 @@ function makeFloorRoof(){
     var rug1Texture = loader.load("images/rug1.jpg");
     var geometryRug1 = new THREE.BoxGeometry(4, 1.1, 3);
     var materialRug1 = new THREE.MeshStandardMaterial({
-        map: rug1Texture,
+        normalMap: rug1Texture,
         ambient: 0x050505,
         specular: 0x555555,
         shininess: 30
@@ -141,7 +157,7 @@ function makeFloorRoof(){
     var rug2Texture = loader.load("images/rug2.jpg");
     var geometryRug2 = new THREE.BoxGeometry(4, 1.1, 2);
     var materialRug2 = new THREE.MeshStandardMaterial({
-        map: rug2Texture,
+        normalMap: rug2Texture,
         ambient: 0x050505,
         specular: 0x555555,
         shininess: 30
@@ -273,20 +289,20 @@ function makeBulbGroup(intensity) {
     group.position.y = 4.5;
     group.position.z = 1;
     group.position.x = 0;
-    group.scale.set(0.5,0.5,0.5);
+    group.scale.set(0.5, 0.5, 0.5);
 }
 
 //-------------VR----------------------------------
-effect = new THREE.StereoEffect( renderer );
-effect.setSize( window.innerWidth, window.innerHeight );
+effect = new THREE.StereoEffect(renderer);
+effect.setSize(window.innerWidth, window.innerHeight);
 var controls = new THREE.DeviceOrientationControls(camera);
 //-------------------------------------------------
 
 makeWalls();
 makeFloorRoof();
 makeBulbGroup(1);
-arrow = new THREE.ArrowHelper( camera.getWorldDirection(), camera.getWorldPosition(), 5, Math.random() * 0xffffff );
-scene.add( arrow )
+arrow = new THREE.ArrowHelper(camera.getWorldDirection(), camera.getWorldPosition(), 5, Math.random() * 0xffffff);
+scene.add(arrow)
 
 function onMouseMove(event) {
 
@@ -298,60 +314,61 @@ function onMouseMove(event) {
 
 }
 
-var tl = 0, t1 = 0, t2=0;
+var tl = 0, t1 = 0, t2 = 0;
 
 function render() {
     requestAnimationFrame(render);
 
     raycaster.setFromCamera(mouse, camera);
-    scene.remove ( arrow );
-    arrow = new THREE.ArrowHelper( camera.getWorldDirection(), camera.getWorldPosition(), 2, Math.random() * 0xffffff );
-    scene.add( arrow );
+    scene.remove(arrow);
+    arrow = new THREE.ArrowHelper(camera.getWorldDirection(), camera.getWorldPosition(), 2, Math.random() * 0xffffff);
+    scene.add(arrow);
 
     var intersects = raycaster.intersectObjects(scene.children, true);
-    
+
     if (intersects.length > 0) {
         if (intersects[0].object.name == "switch") {
             tl++;
             if (tl > 90) {
                 intensity *= -1
-                if(intensity < 0){
+                if (intensity < 0) {
                     group.getObjectByName("bulbLight").intensity = 0;
                     makeBulbGroup(0);
                 }
-                else{
+                else {
                     makeBulbGroup(1);
                 }
                 tl = 0;
             }
-        }else{
+        } else {
             if (intersects[0].object.name == "rug1") {
                 t1++;
                 if (t1 > 60) {
                     camera.position.set(0, 1, -7);
-                    t1=0;
+                    t1 = 0;
                 }
-            }else{
+            } else {
                 if (intersects[0].object.name == "rug2") {
                     t2++;
                     if (t2 > 60) {
-                        camera.position.set(7,1,7);
-                        t2=0;
+                        camera.position.set(7, 1, 7);
+                        t2 = 0;
                     }
                 }
             }
         }
     } else {
-       tl = 0;
-       t1 = 0;
-       t2 = 0;
+        tl = 0;
+        t1 = 0;
+        t2 = 0;
     }
 
     controls.update();
-    effect.render( scene, camera )
+    effect.render(scene, camera)
     //renderer.render(scene, camera);
 }
 render();
 window.addEventListener('mousemove', onMouseMove, false); 
+
 
 
